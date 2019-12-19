@@ -1,0 +1,19 @@
+<body>
+  <header>
+    <h1 id="logo">FWL</h1>
+    
+    <% if (data.authUser) { %>
+      Welcome <strong><%= data.authUser.firstName %></strong> - <a href="/logout">Logout</a>
+    <% } %>
+  </header>
+  
+  <nav>
+    <ul>
+      <% if (data.authUser) { %>
+        <li><a href="/home">Profile</a></li>
+        <li><a href="/collections">Collections</a></li>
+      <% } %>
+    </ul>
+  </nav>
+
+  <main>

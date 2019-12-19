@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>FWL - Suggestions</title>
+</head>
+
+<body>
+  <main>
+    <a href="javascript:window.close();">Close Window</a>
+
+    <h2>Suggestions</h2>
+    
+    <form name="createSuggestionForm" method="post" action="/suggestions?referringURL=<%= encodeURIComponent(data.referringURL || '') %>">
+      <input type="text" name="name" value="<%= data.authorName %>" /><br />
+      <textarea name="text" required="required"><%= data.text %></textarea><br />
+      <input type="submit" value="Submit" /><br />
+      <span id="formErrorMessage"><%= data.formErrorMessage %></span>
+    </form>
+
+    <ul class="suggestionList">
+    <% for (const suggestion of data.suggestions) { %>
+      <li><strong><%= suggestion.author_name %></strong>: <%= suggestion.text %></li>
+    <% } %>
+    </ul>
+
+  </main>
+</body>

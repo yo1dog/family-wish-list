@@ -1,0 +1,54 @@
+body {
+	font-family: sans-serif;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+a {
+	text-decoration: none;
+	color: blue;
+}
+
+.wishlist th, .wishlist td {
+	margin: 0px;
+	border: 1px solid #000000;
+	padding: 10px;
+}
+
+
+.item-img {
+  max-width: 64px;
+  max-height: 64px;
+}
+
+.item-covered-fulfilled {
+	background-color: #CCCCCC;
+}
+.item-covered-unfulfilled {
+  background-color: #CCCCCC;
+}
+.item-user-covered-fulfilled {
+  background-color: #CCFFCC;
+}
+.item-user-covered-unfulfilled {
+  background-color: #FFCCCC;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 200pt;
+}
+
+textarea {
+  width: 200pt;
+  height: 100pt;
+}
+
+#formErrorMessage {
+  color: red;
+}
+
+.suggestionList li {
+  white-space: pre-wrap;
+}
