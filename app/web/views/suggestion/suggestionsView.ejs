@@ -11,7 +11,7 @@
 
     <h2>Suggestions</h2>
     
-    <form name="createSuggestionForm" method="post" action="/suggestions?referringURL=<%= encodeURIComponent(data.referringURL || '') %>">
+    <form name="createSuggestionForm" method="post" action="/suggestions?referringUrl=<%= encodeURIComponent(data.referringUrl || '') %>">
       <input type="text" name="name" value="<%= data.authorName %>" /><br />
       <textarea name="text" required="required"><%= data.text %></textarea><br />
       <input type="submit" value="Submit" /><br />

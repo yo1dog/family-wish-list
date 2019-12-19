@@ -14,7 +14,7 @@ module.exports = function createViewData(req, data = {}) {
   return {
     data: {
       authUser: state.authUser,
-      currentURL: (reqUrlObj.path || '/') + (reqUrlObj.hash || ''),
+      currentUrl: (reqUrlObj.path || '/') + (reqUrlObj.hash || ''),
       ...data
     }
   };

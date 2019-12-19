@@ -35,14 +35,14 @@ function startCluster() {
   //console.log({numWorkers, targetNumWorkers, maxNumWorkers, minNumWorkers});
   
   const primaryWorker = spawnWorker(true);
-  console.log(`Spawned primary worker.`, {workerID: primaryWorker.id});
+  console.log(`Spawned primary worker.`, {workerId: primaryWorker.id});
   
   for (let i = 1; i < numWorkers; ++i) {
     const worker = spawnWorker(false);
-    console.log(`Spawned worker ${i + 1}/${numWorkers}.`, {workerID: worker.id});
+    console.log(`Spawned worker ${i + 1}/${numWorkers}.`, {workerId: worker.id});
   }
   
-  console.log('Spawned workers.', {primaryWorkerID: primaryWorker.id});
+  console.log('Spawned workers.', {primaryWorkerId: primaryWorker.id});
   
   // replace dead workers
   replaceDeadWorkers(primaryWorker);
@@ -63,10 +63,10 @@ function replaceDeadWorkers(primaryWorker) {
     // check if the worker that died was the primary worker
     const wasPrimaryWorker = worker === primaryWorker;
     
-    console.error('Worked died.', {deadWorkerID: worker.id, wasPrimaryWorker, code, signal});
+    console.error('Worked died.', {deadWorkerId: worker.id, wasPrimaryWorker, code, signal});
     
     // replace the dead worker
-    console.log('Replacing worker...', {deadWorkerID: worker.id, wasPrimaryWorker});
+    console.log('Replacing worker...', {deadWorkerId: worker.id, wasPrimaryWorker});
     
     setTimeout(() => {
       const newWorker = cluster.fork({
@@ -74,12 +74,12 @@ function replaceDeadWorkers(primaryWorker) {
         PRIMARY_WORKER: wasPrimaryWorker? 'TRUE' : '',
       });
       
-      console.log('Replaced worker.', {deadWorkerID: worker.id, newWorkerID: newWorker.id, isPrimaryWorker: wasPrimaryWorker});
+      console.log('Replaced worker.', {deadWorkerId: worker.id, newWorkerId: newWorker.id, isPrimaryWorker: wasPrimaryWorker});
       
       // record the new primary worker
       if (wasPrimaryWorker) {
         primaryWorker = newWorker;
-        console.log('New primary worker.', {primaryWorkerID: primaryWorker.id});
+        console.log('New primary worker.', {primaryWorkerId: primaryWorker.id});
       }
     }, 3000);
   });
@@ -89,6 +89,6 @@ function replaceDeadWorkers(primaryWorker) {
     // check if the worker that disconnected was the primary worker
     const wasPrimaryWorker = worker === primaryWorker;
     
-    console.log('Worker disconnected.', {workerID: worker.id, wasPrimaryWorker});
+    console.log('Worker disconnected.', {workerId: worker.id, wasPrimaryWorker});
   });
 }

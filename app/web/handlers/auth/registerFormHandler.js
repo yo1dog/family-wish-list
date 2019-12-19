@@ -9,8 +9,8 @@ const PGError          = require('@yo1dog/pg-error');
 
 module.exports = wrapAsyncHandler(async (req, res, next) => {
   // get callback
-  const callbackURL = req.query.callbackURL;
-  const defaultCallbackURL = '/home';
+  const callbackUrl = req.query.callbackUrl;
+  const defaultCallbackUrl = '/home';
   
   // get user data
   const firstName       = (req.body.firstName || '').trim();
@@ -66,7 +66,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
   res.cookie(authUtil.cookieName, authToken);
   
   // redirect
-  return res.redirect(callbackURL || defaultCallbackURL);
+  return res.redirect(callbackUrl || defaultCallbackUrl);
   
   
   /** @param {string} message */
@@ -76,7 +76,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
       firstName,
       lastName,
       email,
-      callbackURL
+      callbackUrl
     }));
   }
 });

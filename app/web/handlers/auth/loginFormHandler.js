@@ -8,8 +8,8 @@ const CError           = require('@yo1dog/cerror');
 
 module.exports = wrapAsyncHandler(async (req, res, next) => {
   // get callback
-  const callbackURL = req.query.callbackURL;
-  const defaultCallbackURL = '/home';
+  const callbackUrl = req.query.callbackUrl;
+  const defaultCallbackUrl = '/home';
   
   // get email and password
   const email    = (req.body.email || '').trim();
@@ -38,7 +38,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
   res.cookie(authUtil.cookieName, authToken);
   
   // redirect
-  return res.redirect(callbackURL || defaultCallbackURL);
+  return res.redirect(callbackUrl || defaultCallbackUrl);
   
   
   /** @param {string} message */
@@ -46,7 +46,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
     return res.render('auth/loginView.ejs', createViewData(req, {
       formErrorMessage: message,
       email,
-      callbackURL
+      callbackUrl
     }));
   }
 });

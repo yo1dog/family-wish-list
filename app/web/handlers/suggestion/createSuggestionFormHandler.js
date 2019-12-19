@@ -8,7 +8,7 @@ const CError              = require('@yo1dog/cerror');
 
 module.exports = wrapAsyncHandler(async (req, res, next) => {
   // get referring URL
-  const referringURL = req.query.referringURL;
+  const referringUrl = req.query.referringUrl;
   
   // get form data
   const authorName = (req.body.name || '').trim();
@@ -27,7 +27,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
     ) VALUES (
       ${authorName || 'Anonymous'},
       ${text},
-      ${referringURL || null}
+      ${referringUrl || null}
     )
   `)
   .catch(err => {throw new CError(err, `Error INSERTing suggestion.`);});
@@ -41,7 +41,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
     return res.render('suggestion/suggestionsView.ejs', createViewData(req, {
       ...await suggestionsViewData(),
       formErrorMessage: message,
-      referringURL,
+      referringUrl,
       authorName,
       text
     }));

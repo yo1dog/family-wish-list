@@ -10,8 +10,8 @@ module.exports.create = createRedirectAuthMiddleware;
  */
 function createRedirectAuthMiddleware() {
   return wrapAsyncHandler(async (req, res, next) => {
-    const callbackURL = req.query.callbackURL;
-    const redirectUrl = callbackURL || '/home';
+    const callbackUrl = req.query.callbackUrl;
+    const redirectUrl = callbackUrl || '/home';
     
     const state = getRequestState(req);
     

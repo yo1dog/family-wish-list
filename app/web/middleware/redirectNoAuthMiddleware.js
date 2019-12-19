@@ -12,9 +12,9 @@ module.exports.create = createRedirectNoAuthMiddleware;
 function createRedirectNoAuthMiddleware() {
   return wrapAsyncHandler(async (req, res, next) => {
     const reqUrlObj = urlUtil.parse(req.url);
-    const currentURL = (reqUrlObj.path || '/') + (reqUrlObj.hash || '');
+    const currentUrl = (reqUrlObj.path || '/') + (reqUrlObj.hash || '');
     
-    const redirectUrl = `/login?callbackURL=${encodeURIComponent(currentURL)}`;
+    const redirectUrl = `/login?callbackUrl=${encodeURIComponent(currentUrl)}`;
     
     const state = getRequestState(req);
     
