@@ -1,5 +1,6 @@
-const pg = require('pg');
-const PGError = require('@yo1dog/pg-error');
+const pg =             require('pg');
+const PGError         = require('@yo1dog/pg-error');
+const transactionWrap = require('./utils/sql/transactionWrap');
 
 pg.types.setTypeParser(20, val => BigInt(val));
 
@@ -63,6 +64,15 @@ const db = {
     catch(err) {
       throw new PGError(err, sql);
     }
+  },
+  
+  /**
+   * @template T
+   * @param {import('./utils/sql/transactionWrap').ExecFn<T>} fn 
+   * @returns {Promise<T>}
+   */
+  async transactionWrap(fn) {
+    return transactionWrap(this.getPool(), fn);
   }
 };
 

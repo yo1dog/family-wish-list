@@ -34,7 +34,7 @@ module.exports = async function run(context) {
         id                     SERIAL  NOT NULL PRIMARY KEY,
         owner_user_id          INT     NOT NULL REFERENCES usr(id) ON UPDATE CASCADE ON DELETE CASCADE,
         name                   TEXT    NOT NULL,
-        exclusive_wish_list_id INT,
+        has_single_wish_list   BOOLEAN NOT NULL DEFAULT FALSE,
         is_hidden              BOOLEAN NOT NULL DEFAULT FALSE
       );
       CREATE INDEX ON wish_list_collection (owner_user_id);
@@ -46,8 +46,6 @@ module.exports = async function run(context) {
       );
       CREATE UNIQUE INDEX ON wish_list (wish_list_collection_id, owner_user_id);
       
-      ALTER TABLE wish_list_collection ADD FOREIGN KEY (exclusive_wish_list_id) REFERENCES wish_list(id) ON UPDATE CASCADE ON DELETE CASCADE;
-      
       CREATE TABLE wish_list_item (
         id                 SERIAL  NOT NULL PRIMARY KEY,
         wish_list_id       INT     NOT NULL REFERENCES wish_list(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -58,7 +56,7 @@ module.exports = async function run(context) {
         image_url          TEXT    NOT NULL DEFAULT ''::TEXT,
         priority           SERIAL  NOT NULL,
         covered_by_user_id INT     REFERENCES usr(id) ON UPDATE CASCADE ON DELETE SET NULL,
-        fulfilled          BOOLEAN NOT NULL DEFAULT FALSE
+        is_fulfilled       BOOLEAN NOT NULL DEFAULT FALSE
       );
       
       CREATE TABLE suggestion (

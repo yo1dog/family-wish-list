@@ -3,8 +3,8 @@ const pathUtil = require('path');
 
 /**
  * @typedef RequestState
- * @property {string} [apiKey]
- * @property {{[key: string]: any}} [authUser]
+ * @property {string | undefined} [apiKey]
+ * @property {{[key: string]: any} | undefined} [authUser]
  */
 
 const app = express();

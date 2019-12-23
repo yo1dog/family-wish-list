@@ -1,7 +1,11 @@
-const wrapAsyncHandler = require('../../../utils/wrapAsyncHandler');
-const createViewData   = require('../../../utils/createViewData');
+const createViewHandler = require('../../../utils/createViewHandler');
+const getRequestState   = require('../../../utils/getRequestState');
+const homeViewData      = require('../../views/user/homeViewData');
 
 
-module.exports = wrapAsyncHandler(async (req, res, next) => {
-  return res.render('user/homeView.ejs', createViewData(req, {}));
+module.exports = createViewHandler('user/homeView.ejs', async (req) => {
+  const {authUser} = getRequestState(req);
+  if (!authUser) throw new Error(`Auth user required.`);
+  
+  return await homeViewData(authUser.id);
 });

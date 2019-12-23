@@ -3,12 +3,97 @@
 <head>
   <%- include('../partials/head') %>
   <title>Family Wish List</title>
+  
+  <script type="text/javascript" src="/script.js"></script>
+  <script type="text/javascript">
+    async function setWishListItemFulfilled(itemId, isFulfilled) {
+      setWishListItemStatus(itemId, '...');
+      
+      try {
+        await wishListItemUpdater.setCovered(itemId, true, isFulfilled);
+      }
+      catch(err) {
+        console.error(err);
+        setWishListItemStatus(itemId, 'Oops, something went wrong. Please try again latter.');
+        return;
+      }
+      
+      setWishListItemStatus(itemId, '');
+    }
+    
+    function setWishListItemStatus(itemId, status) {
+      const itemStatusSpan = document.getElementById(`itemStatusSpan${itemId}`);
+      itemStatusSpan.innerText = status;
+    }
+  </script>
 </head>
 
 <%- include('../partials/header') %>
 
-<p>
-  Hello World
-</p>
+<h3>Gifts Checklist</h3>
+<p>These are the gifts that you said you are going to get. Once you get the item, you can check it off.</p>
+
+<ul>
+  <%
+  for (const coveredCollection of data.coveredCollections) {
+    %>
+    <li>
+      <a href="/collection/<%= encodeURIComponent(coveredCollection.id) %>">
+        <%= coveredCollection.name %>
+      </a>
+      
+      <ul>
+        <%
+        function coveredItemPartial(coveredItem) {
+          %>
+          <li>
+            <input
+              type="checkbox"
+              <% if (coveredItem.is_fulfilled) { %>checked<% } %>
+              id="itemCheckbox<%= coveredItem.id %>"
+              x-wish-list-item-id="<%= coveredItem.id %>"
+              onChange="setWishListItemFulfilled(this.getAttribute('x-wish-list-item-id'));"
+            />
+            <a href="/wishList/<%= encodeURIComponent(coveredItem.wish_list_id) %>#item<%= encodeURIComponent(coveredItem.id) %>">
+              <%= coveredItem.name %>
+            </a>
+            <span id="itemStatusSpan<%= coveredItem.id %>"></span>
+          </li>
+          <%
+        }
+        
+        if (coveredCollection.has_single_wish_list) {
+          for (const coveredItem of coveredCollection.covered_wish_lists[0].covered_items) {
+            coveredItemPartial(coveredItem);
+          }
+        }
+        else {
+          for (const coveredWishList of coveredCollection.covered_wish_lists) {
+            %>
+            <li style="margin-top: 10px;">
+              <span>
+                <a href="/wishList/<%= encodeURIComponent(coveredWishList.id) %>">
+                  <%= coveredWishList.owner_user_first_name %>
+                </a>
+              </span>
+              
+              <ul>
+                <%
+                for (coveredItem of coveredWishList.covered_items) {
+                  coveredItemPartial(coveredItem);
+                }
+                %>
+              </ul>
+            </li>
+            <%
+          }
+        }
+        %>
+      </ul>
+    </li>
+    <%
+  }
+  %>
+</ul>
 
 <%- include('../partials/footer') %>

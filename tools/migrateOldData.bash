@@ -41,14 +41,14 @@ cd "$(dirname "$0")"
       id,
       owner_user_id,
       name,
-      exclusive_wish_list_id,
+      has_single_wish_list,
       is_hidden
     )
     SELECT
       id,
       owner_user_id,
       name,
-      NULL,
+      exclusive_wish_list_id IS NOT NULL,
       is_hidden
     FROM fwl_old.wish_list_collections;
     SELECT setval(
@@ -73,11 +73,6 @@ cd "$(dirname "$0")"
       FALSE
     ) FROM public.wish_list;
     
-    UPDATE public.wish_list_collection AS new
-    SET exclusive_wish_list_id = old.exclusive_wish_list_id
-    FROM fwl_old.wish_list_collections AS old
-    WHERE new.id = old.id;
-    
     INSERT INTO public.wish_list_item (
       id,
       wish_list_id,
@@ -88,7 +83,7 @@ cd "$(dirname "$0")"
       image_url,
       priority,
       covered_by_user_id,
-      fulfilled
+      is_fulfilled
     )
     SELECT
       id,
