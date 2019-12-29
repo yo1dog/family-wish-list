@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>FWL - Collections</title>
+</head>
+
+<%- include('../partials/header') %>
+
+<h2>Collections</h2>
+
+<% if (data.collections.length === 0) {
+  %>
+  <p>No Collections<p>
+  <%
+}
+else {
+  %>
+  <ul>
+  <%
+  for (const collection of data.collections) {
+    %>
+    <li>
+      <a href="/collections/<%= collection.id %>">
+        <%= collection.name %>
+      </a>
+    </li>
+    <%
+  }
+  %>
+  </ul>
+  <%
+}
+%>
+
+<% if (data.authUser.is_admin) {
+  %>
+  <form name="createCollectionForm" method="post" action="/collections/create">
+    <input type="text" name="collectionName" required />
+    <input type="submit" value="Create Collection" />
+  </form>
+  <%
+}
+%>
+
+<%- include('../partials/footer') %>

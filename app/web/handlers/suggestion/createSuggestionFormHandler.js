@@ -39,10 +39,8 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
   /** @param {string} message */
   async function returnFormError(message) {
     return res.render('suggestion/suggestionsView.ejs', createViewData(req, {
-      ...await suggestionsViewData(),
+      ...await suggestionsViewData({referringUrl, authorName}),
       formErrorMessage: message,
-      referringUrl,
-      authorName,
       text
     }));
   }

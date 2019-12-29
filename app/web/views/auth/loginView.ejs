@@ -18,24 +18,24 @@ callbackQueryString = data.callbackUrl? `?callbackUrl=${encodeURIComponent(data.
 <h2>Login</h2>
 
 <form name="loginForm" method="post" action="/login<%= callbackQueryString %>">
- 	<table>
-		<tr>
-			<td><label for="email">Email:</label></td>
-			<td><input type="email" name="email" required value="<%= data.email %>" /></td>
-		</tr>
-		<tr>
-			<td><label for="password">Password:</label></td>
-			<td>
-				<input type="password" name="password" required />
-				<a href="/resetPassword<%= callbackQueryString %>">Forgot?</a><br>
-			</td>
-		</tr>
-	</table>
+  <table>
+    <tr>
+      <td><label for="email">Email:</label></td>
+      <td><input type="email" name="email" required value="<%= data.email %>" /></td>
+    </tr>
+    <tr>
+      <td><label for="password">Password:</label></td>
+      <td>
+        <input type="password" name="password" required />
+        <a href="/resetPassword<%= callbackQueryString %>">Forgot?</a><br>
+      </td>
+    </tr>
+  </table>
   
-	<input type="submit" value="Login" /><br>
-	<span id="formErrorMessage"><%= data.formErrorMessage %></span><br>
-	<br>
-	<a href="/register<%= callbackQueryString %>">Register</a>
+  <input type="submit" value="Login" /><br>
+  <span id="formErrorMessage"><%= data.formErrorMessage %></span><br>
+  <br>
+  <a href="/register<%= callbackQueryString %>">Register</a>
 </form>
 
 <%- include('../partials/footer') %>

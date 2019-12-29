@@ -1,0 +1,311 @@
+<%
+const isAuthUserWishList = data.wishList.owner_user_id === data.authUser.id;
+
+let listName;
+if (isAuthUserWishList) {
+  listName = 'Your';
+}
+else {
+  listName = data.wishList.owner_user_first_name;
+  if (/[sS]$/.test(listName)) {
+    listName += '\'';
+  }
+  else {
+    listName += '\'s';
+  }
+  
+}
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>FWL - <%= data.wishList.wish_list_collection_name %> - <%= listName %> Wish List</title>
+  
+  <script>
+    /**
+     * @param {number|string} itemId 
+     * @param {boolean} isCovered 
+     * @param {boolean} [isFulfilled] 
+     */
+    async function setItemCovered(itemId, isCovered, isFulfilled) {
+      setItemStatusHTML(itemId, '...');
+      
+      try {
+        await wishListItemUpdater.setCovered(itemId, isCovered, isFulfilled);
+      }
+      catch (err) {
+        console.error(err);
+        setItemStatusHTML(itemId, 'Oops, something went wrong. Please try again latter.');
+        return;
+      }
+      
+      let statusHTML;
+      let rowClassName;
+      
+      if (isCovered) {
+        statusHTML = '<strong>You</strong>';
+        
+        if (isFulfilled) {
+          statusHTML += `
+            got this.
+            -
+            <a href="javascript:setItemCovered('${itemId}', true, false);">
+              I haven't got it yet.
+            </a>
+          `;
+          rowClassName = 'item-user-covered-fulfilled';
+        }
+        else {
+          statusHTML += `
+            plan on getting this.
+            -
+            <a href="javascript:setItemCovered('${itemId}', true, true);">
+              Got it.
+            </a>
+            -
+            <a href="javascript:setItemCovered('${itemId}', false);">
+              I'm not going to get this.
+            </a>
+          `;
+          rowClassName = 'item-user-covered-unfulfilled';
+        }
+      }
+      else {
+        statusHTML = `
+          No one is getting this.
+          -
+          <a href="javascript:setItemCovered('${itemId}', true, false);">
+            I'll get this.
+          </a>`;
+      }
+      
+      setWishListItemStatusHTML(itemId, statusHTML);
+      setItemRowClass(itemId, rowClassName);
+    }
+    
+    /**
+     * @param {number|string} itemId 
+     * @param {string} html 
+     */
+    function setWishListItemStatusHTML(itemId, html) {
+      const itemStatusCell = document.getElementById(`itemStatusCell${itemId}`);
+      itemStatusCell.innerHTML = html;
+    }
+    
+    /**
+     * @param {number|string} itemId 
+     * @param {string} className 
+     */
+    function setItemRowClass(itemId, className) {
+      var itemRow = document.getElementById(`item${itemId}`);
+      itemRow.className = c;
+    }
+    
+    /**
+     * @param {number|string} itemId 
+     */
+    function deleteItem(itemId) {
+      if (confirm('Are you sure you want to delete this item?')) {
+        window.location.assign(`/wishListItems/${itemId}/delete`);
+      }
+    }
+  </script>
+</head>
+
+<%- include('../partials/header') %>
+
+<h2>
+  <a href="/collections/<%= data.wishList.wish_list_collection_id %>">
+    <%= data.wishList.wish_list_collection_name %>
+  </a>
+  -
+  <%= listName %> Wish List
+</h2>
+
+<a href="/wishListItems/create?wishListId=<%= data.wishList.id %>">Add Item</a><br />
+<br />
+
+<table class="wish-list">
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%
+    const ownerItems = [];
+    const nonOwnerItems = [];
+    for (const item of data.wishListItems) {
+      if (item.creator_user_id === data.wishList.owner_user_id) {
+        ownerItems.push(item);
+      }
+      else {
+        nonOwnerItems.push(item);
+      }
+    }
+    
+    // show message if there are no items
+    if (ownerItems.length === 0) {
+      %>
+      <tr>
+        <td colspan="5">
+          <%
+          if (isAuthUserWishList) {
+            %>
+              You have no items on your list.
+              Add items by clicking the <strong>Add Item</strong> link above.
+            <%
+          }
+          else {
+            %>
+              <%= data.wishList.owner_user_first_name %> has not added any items.
+            <%
+          }
+          %>
+        </td>
+      </tr>
+      <%
+    }
+    else {
+      itemsPartial(ownerItems);
+    }
+    
+    if (!isAuthUserWishList) {
+      if (nonOwnerItems.length > 0) {
+        %>
+        <tr>
+          <td colspan="5">Added by Others</td>
+        </tr>
+        <%
+        
+        itemsPartial(nonOwnerItems);
+      }
+    }
+    
+    /**
+     * @param {object[]} items
+     */
+    function itemsPartial(items) {
+      for (const item of items) {
+        const isCoveredByAuthUser      = item.covered_by_user_id === data.authUser.id;
+        const isCreatedByAuthUser      = item.creator_user_id    === data.authUser.id;
+        const isCreatedByWishListOwner = item.creator_user_id    === data.wishList.owner_user_id;
+        %>
+        <tr
+          id="item<%= item.id %>"
+          class="
+            item
+            <%
+            if (!isAuthUserWishList) {
+              %>
+              item<%= isCoveredByAuthUser? '-user' : '' %>-covered-<%= item.is_fulfilled? '' : 'un' %>fulfilled
+              <%
+            }
+            %>
+          "
+        >
+          <td>
+            <%
+            if (item.image_url) {
+              if (item.url) { %><a href="<%= item.url %>" target="_blank"><% }
+              %><img class="item-img" src="<%= item.image_url %>" /><%
+              if (item.url) { %></a><% }
+            }
+            %>
+          </td>
+          <td>
+            <%
+            if (item.url) { %><a href="<%= item.url %>" target="_blank"><% }
+            %><%= item.name %><%
+            if (item.url) { %></a><% }
+            %>
+          </td>
+          <td class="item-description"><%= item.description %></td>
+          <td id="itemStatusCell<%= item.id %>">
+            <%
+            // dont show if it is the logged-in user's wishlist
+            if (!isAuthUserWishList) {
+              if (!item.covered_by_user_id) {
+                %>
+                No one is getting this.
+                -
+                <a href="javascript:setItemCovered('<%= item.id %>', true, false);">
+                  I'll get this.
+                </a>
+                <%
+              }
+              else if (isCoveredByAuthUser) {
+                %>
+                <strong>You</strong>
+                <%
+                if (item.is_fulfilled) {
+                  %>
+                  got this.
+                  -
+                  <a href="javascript:setItemCovered('<%= item.id %>', true, false);">
+                    I haven't got it yet.
+                  </a>
+                  <%
+                }
+                else {
+                  %>
+                  plan on getting this.
+                  -
+                  <a href="javascript:setItemCovered('<%= item.id %>', true, true);">
+                    Got it.
+                  </a>
+                  -
+                  <a href="javascript:setItemCovered('<%= item.id %>', false);">
+                    I'm not going to get this.
+                  </a>
+                  <%
+                }
+              }
+              else {
+                %>
+                <strong><%= item.covered_by_user_first_name %></strong>
+                <%
+                if (item.is_fulfilled) {
+                  %>
+                  got this.
+                  <%
+                }
+                else {
+                  %>
+                  plans on getting this.
+                  <%
+                }
+              }
+            }
+            %>
+          </td>
+          <td class="item-update-cell">
+            <%
+              if (isCreatedByAuthUser) {
+                %>
+                <a href="/wishListItems/<%= item.id %>/update">Edit</a>
+                -
+                <a href="javascript:deleteItem('<%= item.id %>')">Delete</a>
+                <%
+              }
+              else if (!isCreatedByWishListOwner) {
+                %>
+                <small>Added by <%= item.creator_user_first_name %></small>
+                <%
+              }
+            %>
+          </td>
+        </tr>
+        <%
+      }
+    }
+    %>
+  </tbody>
+</table>
+
+<%- include('../partials/footer') %>

@@ -1,20 +1,26 @@
 body {
-	font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 table {
-	border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 a {
-	text-decoration: none;
-	color: blue;
+  text-decoration: none;
+  color: blue;
 }
 
-.wishList th, .wishList td {
-	margin: 0px;
-	border: 1px solid #000000;
-	padding: 10px;
+.wish-list th, .wish-list td {
+  margin: 0px;
+  border: 1px solid #000000;
+  padding: 10px;
+}
+.item-description {
+  white-space: pre-wrap;
+}
+.item-update-cell {
+  white-space: nowrap;
 }
 
 
@@ -24,7 +30,7 @@ a {
 }
 
 .item-covered-fulfilled {
-	background-color: #CCCCCC;
+  background-color: #CCCCCC;
 }
 .item-covered-unfulfilled {
   background-color: #CCCCCC;

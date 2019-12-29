@@ -4,8 +4,12 @@
   <%- include('../partials/head') %>
   <title>Family Wish List</title>
   
-  <script type="text/javascript" src="/script.js"></script>
-  <script type="text/javascript">
+  <script src="/script.js"></script>
+  <script>
+    /**
+     * @param {number|string} itemId 
+     * @param {boolean} isFulfilled 
+     */
     async function setWishListItemFulfilled(itemId, isFulfilled) {
       setWishListItemStatus(itemId, '...');
       
@@ -21,6 +25,10 @@
       setWishListItemStatus(itemId, '');
     }
     
+    /**
+     * @param {number|string} itemId 
+     * @param {string} status 
+     */
     function setWishListItemStatus(itemId, status) {
       const itemStatusSpan = document.getElementById(`itemStatusSpan${itemId}`);
       itemStatusSpan.innerText = status;
@@ -38,12 +46,15 @@
   for (const coveredCollection of data.coveredCollections) {
     %>
     <li>
-      <a href="/collection/<%= encodeURIComponent(coveredCollection.id) %>">
+      <a href="/collection/<%= coveredCollection.id %>">
         <%= coveredCollection.name %>
       </a>
       
       <ul>
         <%
+        /**
+         * @param {object} coveredItem
+         */
         function coveredItemPartial(coveredItem) {
           %>
           <li>
@@ -51,10 +62,9 @@
               type="checkbox"
               <% if (coveredItem.is_fulfilled) { %>checked<% } %>
               id="itemCheckbox<%= coveredItem.id %>"
-              x-wish-list-item-id="<%= coveredItem.id %>"
-              onChange="setWishListItemFulfilled(this.getAttribute('x-wish-list-item-id'));"
+              onChange="setWishListItemFulfilled('<%= coveredItem.id %>');"
             />
-            <a href="/wishList/<%= encodeURIComponent(coveredItem.wish_list_id) %>#item<%= encodeURIComponent(coveredItem.id) %>">
+            <a href="/wishList/<%= coveredItem.wish_list_id %>#item<%= coveredItem.id %>">
               <%= coveredItem.name %>
             </a>
             <span id="itemStatusSpan<%= coveredItem.id %>"></span>
@@ -72,7 +82,7 @@
             %>
             <li style="margin-top: 10px;">
               <span>
-                <a href="/wishList/<%= encodeURIComponent(coveredWishList.id) %>">
+                <a href="/wishList/<%= coveredWishList.id %>">
                   <%= coveredWishList.owner_user_first_name %>
                 </a>
               </span>

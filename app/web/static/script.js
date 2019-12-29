@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const wishListItemUpdater = {
   /**
-   * @param {string} itemId 
+   * @param {number|string} itemId 
    * @param {boolean} isCovered 
    * @param {boolean} [isFulfilled] 
    */

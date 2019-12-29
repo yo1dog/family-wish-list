@@ -19,6 +19,7 @@ cd "$(dirname "$0")"
       last_name,
       email,
       avatar_image_url,
+      is_admin,
       password_hash,
       auth_token
     )
@@ -28,6 +29,7 @@ cd "$(dirname "$0")"
       last_name,
       email,
       avatar_image_url,
+      id = 7,
       encode(password_hash, 'hex'),
       md5(random()::text)
     FROM fwl_old.users;

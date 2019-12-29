@@ -75,6 +75,7 @@ async function getAuthUser(authToken) {
       last_name,
       email,
       avatar_image_url,
+      is_admin,
       auth_token
     FROM usr
     WHERE auth_token = ${authToken}

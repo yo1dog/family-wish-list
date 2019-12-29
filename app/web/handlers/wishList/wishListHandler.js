@@ -1,11 +1,11 @@
 const createViewHandler = require('../../../utils/createViewHandler');
 const getRequestState   = require('../../../utils/getRequestState');
-const homeViewData      = require('../../views/user/homeViewData');
+const wishListViewData  = require('../../views/wishList/wishListViewData');
 
 
-module.exports = createViewHandler('user/homeView.ejs', async (req) => {
+module.exports = createViewHandler('wishList/wishListView.ejs', async (req) => {
   const {authUser} = getRequestState(req);
   if (!authUser) throw new Error(`Auth user required.`);
   
-  return await homeViewData({authUserId: authUser.id});
+  return await wishListViewData({wishListId: req.params.wishListId});
 });

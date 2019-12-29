@@ -3,9 +3,10 @@ const SQL    = require('@yo1dog/sql');
 const CError = require('@yo1dog/cerror');
 
 /**
- * @param {string} authUserId
+ * @param {object} options
+ * @param {number|string} options.authUserId
  */
-module.exports = async function homeViewData(authUserId) {
+module.exports = async function homeViewData({authUserId}) {
   const {rows: coveredCollections} = await db.query(SQL`
     SELECT 
       wish_list_collection.id,
