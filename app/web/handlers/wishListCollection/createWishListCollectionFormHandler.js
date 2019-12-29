@@ -41,7 +41,7 @@ module.exports = wrapAsyncHandler(async (req, res, next) => {
   
   /** @param {string} message */
   async function returnFormError(message) {
-    return res.render('suggestion/suggestionsView.ejs', createViewData(req, {
+    return res.render('wishListCollection/wishListCollectionsView.ejs', createViewData(req, {
       ...await wishListCollectionsViewData(),
       formErrorMessage: message,
     }));

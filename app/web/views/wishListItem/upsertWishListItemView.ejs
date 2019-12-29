@@ -1,0 +1,88 @@
+<%
+const isUpdate = data.item.id? true : false;
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <title>FWL / <%= data.wishList.wish_list_collection_name %> / <%= data.wishListName %> Wish List / <%= isUpdate? 'Edit' : 'Add' %> Item</title>
+  
+  <%
+  if (isUpdate) {
+    %>
+    <script>
+      /**
+       * @param {Event} event
+       */
+      function submitDeleteItem(event) {
+        if (!confirm('Are you sure you want to delete this item?')) {
+          event.preventDefault();
+	        return false;
+        }
+        return true;
+      }
+    </script>
+    <%
+  }
+  %>
+</head>
+
+<%- include('../partials/header') %>
+
+<h2>
+  <a href="/collections/<%= data.wishList.wish_list_collection_id %>">
+    <%= data.wishList.wish_list_collection_name %>
+  </a>
+  /
+  <a href="/wishLists/<%= data.wishList.id %>">
+    <%= data.wishListName %> Wish List
+  </a>
+  /
+  <%= isUpdate? 'Edit' : 'Add' %> Item
+</h2>
+
+<form
+  name="upsertItemForm"
+  method="post"
+  action="<%= isUpdate? `/items/${data.item.id}/update` : `/wishLists/${data.wishList.id}/createItem` %>"
+>
+ 	<table>
+ 		<tr>
+			<td><label for="name">Name:</label></td>
+			<td><input type="text" name="name" value="<%= data.item.name || '' %>" required /></td>
+		</tr>
+		<tr>
+			<td><label for="url">URL:</label></td>
+			<td><input type="text" name="url" value="<%= data.item.url || '' %>" /></td>
+		</tr>
+		<tr>
+			<td><label for="imageURL">Image URL:</label></td>
+			<td><input type="text" name="imageURL" value="<%= data.item.image_url || '' %>" /></td>
+		</tr>
+		<tr>
+			<td><label for="description">Description:</label></td>
+			<td><textarea name="description"><%= data.item.description || '' %></textarea></td>
+		</tr>
+	</table>
+	
+	<input type="submit" value="<%= isUpdate? 'Update Item' : 'Add Item' %>" /><br />
+	<span id="formErrorMessage"><%= data.formErrorMessage || '' %></span>
+</form>
+
+<%
+if (isUpdate) {
+  %>
+  <br />
+  <form
+    name="deleteItemForm"
+    method="get"
+    action="/items/<%= data.item.id %>/delete"
+    onsubmit="submitDeleteItem"
+  >
+    <input type="submit" value="Delete Item" />
+  </form>
+  <%
+}
+%>
+
+<%- include('../partials/footer') %>

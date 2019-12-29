@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('../partials/head') %>
-  <title>FWL - Collections</title>
+  <title>FWL / Collections</title>
 </head>
 
 <%- include('../partials/header') %>
@@ -37,7 +37,8 @@ else {
   %>
   <form name="createCollectionForm" method="post" action="/collections/create">
     <input type="text" name="collectionName" required />
-    <input type="submit" value="Create Collection" />
+    <input type="submit" value="Create Collection" /><br />
+    <span id="formErrorMessage"><%= data.formErrorMessage %></span>
   </form>
   <%
 }

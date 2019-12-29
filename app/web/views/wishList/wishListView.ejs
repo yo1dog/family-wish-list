@@ -1,28 +1,15 @@
 <%
 const isAuthUserWishList = data.wishList.owner_user_id === data.authUser.id;
-
-let listName;
-if (isAuthUserWishList) {
-  listName = 'Your';
-}
-else {
-  listName = data.wishList.owner_user_first_name;
-  if (/[sS]$/.test(listName)) {
-    listName += '\'';
-  }
-  else {
-    listName += '\'s';
-  }
-  
-}
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <%- include('../partials/head') %>
-  <title>FWL - <%= data.wishList.wish_list_collection_name %> - <%= listName %> Wish List</title>
+  <title>FWL / <%= data.wishList.wish_list_collection_name %> / <%= data.wishListName %> Wish List</title>
   
   <script>
+    <%- include('../partials/script.js') %>
+    
     /**
      * @param {number|string} itemId 
      * @param {boolean} isCovered 
@@ -78,9 +65,10 @@ else {
           <a href="javascript:setItemCovered('${itemId}', true, false);">
             I'll get this.
           </a>`;
+        rowClassName = '';
       }
       
-      setWishListItemStatusHTML(itemId, statusHTML);
+      setItemStatusHTML(itemId, statusHTML);
       setItemRowClass(itemId, rowClassName);
     }
     
@@ -88,7 +76,7 @@ else {
      * @param {number|string} itemId 
      * @param {string} html 
      */
-    function setWishListItemStatusHTML(itemId, html) {
+    function setItemStatusHTML(itemId, html) {
       const itemStatusCell = document.getElementById(`itemStatusCell${itemId}`);
       itemStatusCell.innerHTML = html;
     }
@@ -99,7 +87,7 @@ else {
      */
     function setItemRowClass(itemId, className) {
       var itemRow = document.getElementById(`item${itemId}`);
-      itemRow.className = c;
+      itemRow.className = className;
     }
     
     /**
@@ -107,7 +95,7 @@ else {
      */
     function deleteItem(itemId) {
       if (confirm('Are you sure you want to delete this item?')) {
-        window.location.assign(`/wishListItems/${itemId}/delete`);
+        window.location.assign(`/items/${itemId}/delete`);
       }
     }
   </script>
@@ -119,11 +107,11 @@ else {
   <a href="/collections/<%= data.wishList.wish_list_collection_id %>">
     <%= data.wishList.wish_list_collection_name %>
   </a>
-  -
-  <%= listName %> Wish List
+  /
+  <%= data.wishListName %> Wish List
 </h2>
 
-<a href="/wishListItems/create?wishListId=<%= data.wishList.id %>">Add Item</a><br />
+<a href="/wishLists/<%= data.wishList.id %>/createItem">Add Item</a><br />
 <br />
 
 <table class="wish-list">
@@ -140,7 +128,7 @@ else {
     <%
     const ownerItems = [];
     const nonOwnerItems = [];
-    for (const item of data.wishListItems) {
+    for (const item of data.items) {
       if (item.creator_user_id === data.wishList.owner_user_id) {
         ownerItems.push(item);
       }
@@ -192,6 +180,7 @@ else {
      */
     function itemsPartial(items) {
       for (const item of items) {
+        const isCovered                = item.covered_by_user_id? true : false;
         const isCoveredByAuthUser      = item.covered_by_user_id === data.authUser.id;
         const isCreatedByAuthUser      = item.creator_user_id    === data.authUser.id;
         const isCreatedByWishListOwner = item.creator_user_id    === data.wishList.owner_user_id;
@@ -199,12 +188,13 @@ else {
         <tr
           id="item<%= item.id %>"
           class="
-            item
             <%
             if (!isAuthUserWishList) {
-              %>
-              item<%= isCoveredByAuthUser? '-user' : '' %>-covered-<%= item.is_fulfilled? '' : 'un' %>fulfilled
-              <%
+              if (isCovered) {
+                %>
+                item<%= isCoveredByAuthUser? '-user' : '' %>-covered-<%= item.is_fulfilled? '' : 'un' %>fulfilled
+                <%
+              }
             }
             %>
           "
@@ -288,7 +278,7 @@ else {
             <%
               if (isCreatedByAuthUser) {
                 %>
-                <a href="/wishListItems/<%= item.id %>/update">Edit</a>
+                <a href="/items/<%= item.id %>/update">Edit</a>
                 -
                 <a href="javascript:deleteItem('<%= item.id %>')">Delete</a>
                 <%

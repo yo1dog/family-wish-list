@@ -108,7 +108,7 @@ cd "$(dirname "$0")"
     INSERT INTO public.suggestion (
       id,
       created_timestamp,
-      author_user_id,
+      author_name,
       text,
       referring_url
     )

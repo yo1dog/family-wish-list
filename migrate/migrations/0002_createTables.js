@@ -24,7 +24,7 @@ module.exports = async function run(context) {
         last_name        TEXT   NOT NULL,
         email            TEXT   NOT NULL,
         avatar_image_url TEXT,
-        is_admin         BOOL  NOT NULL,
+        is_admin         BOOL  NOT NULL DEFAULT FALSE,
         password_hash    TEXT  NOT NULL,
         auth_token       TEXT  NOT NULL
       );

@@ -6,10 +6,34 @@ const CError          = require('@yo1dog/cerror');
 
 /**
  * @param {object} options
- * @param {number|string} options.wishListId
+ * @param {number|string} [options.wishListId]
+ * @param {number|string} [options.itemId]
  * @param {number|string} options.authUserId
  */
-module.exports = async function wishListViewData({wishListId, authUserId}) {
+module.exports = async function upsertWishListItemViewData({wishListId, itemId, authUserId}) {
+  // get the item
+  let item;
+  if (itemId) {
+    const result = await db.query(SQL`
+      SELECT
+        id,
+        name,
+        description,
+        url,
+        image_url,
+        wish_list_id
+      FROM wish_list_item
+      WHERE id = ${itemId}
+    `)
+    .catch(err => {throw new CError(err, `Error SELECTing item with ID '${itemId}'.`);});
+    
+    item = result.rows[0];
+    wishListId = item.wish_list_id;
+  }
+  else {
+    item = {};
+  }
+  
   // get the wish list
   const {rows: [wishList]} = await db.query(SQL`
     SELECT
@@ -27,27 +51,6 @@ module.exports = async function wishListViewData({wishListId, authUserId}) {
   `)
   .catch(err => {throw new CError(err, `Error SELECTing wish list with ID '${wishListId}'.`);});
   
-  // get the items
-  const {rows: items} = await db.query(SQL`
-    SELECT
-      wish_list_item.id,
-      wish_list_item.name,
-      wish_list_item.description,
-      wish_list_item.url,
-      wish_list_item.image_url,
-      wish_list_item.is_fulfilled,
-      wish_list_item.creator_user_id,
-      wish_list_item.covered_by_user_id,
-      creator_user.first_name    AS creator_user_first_name,
-      covered_by_user.first_name AS covered_by_user_first_name
-    FROM wish_list_item
-    LEFT JOIN usr AS creator_user    ON creator_user.id    = wish_list_item.creator_user_id
-    LEFT JOIN usr AS covered_by_user ON covered_by_user.id = wish_list_item.covered_by_user_id
-    WHERE wish_list_item.wish_list_id = ${wishListId}
-    ORDER BY priority ASC
-  `)
-  .catch(err => {throw new CError(err, `Error SELECTing items for wish list with ID '${wishListId}'.`);});
-  
   const wishListName = getWishListName(
     wishList.owner_user_id === authUserId,
     wishList.owner_user_first_name
@@ -55,7 +58,7 @@ module.exports = async function wishListViewData({wishListId, authUserId}) {
   
   return {
     wishList,
-    items,
+    item,
     wishListName
   };
 };

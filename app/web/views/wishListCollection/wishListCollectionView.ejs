@@ -1,15 +1,22 @@
 <%
-const authUserWishList = (
-  data.authUser
-  ? data.wishLists.find(x => x.owner_user_id === data.authUser.id)
-  : null
-);
+// find and move auth user's wish list to top
+let authUserWishList;
+const orderedWishLists = [];
+for (const wishList of data.wishLists) {
+  if (wishList.owner_user_id === data.authUser.id) {
+    authUserWishList = wishList;
+    orderedWishLists.unshift(wishList);
+  }
+  else {
+    orderedWishLists.push(wishList);
+  }
+}
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <%- include('../partials/head') %>
-  <title>FWL - <%= data.collection.name %></title>
+  <title>FWL / <%= data.collection.name %></title>
 </head>
 
 <%- include('../partials/header') %>
@@ -17,17 +24,9 @@ const authUserWishList = (
 <h2><%= data.collection.name %></h2>
 
 <%
-if (authUserWishList) {
+if (!authUserWishList) {
   %>
-  <a href="/wishLists/<%= authUserWishList.id %>">
-    Your Wish List
-  </a>
-  <%
-}
-else {
-  %>
-  <form name="createWishListForm" method="post" action="/wishLists/create">
-    <input type="hidden" name="collectionID" value="<%= data.collection.id %>" />
+  <form name="createWishListForm" method="post" action="/collections/<%= data.collection.id %>/createWishList">
     <input type="submit" value="Create Your Wish List" />
   </form>
   <%
@@ -36,14 +35,15 @@ else {
 
 <ul>
 <%
-for (const wishList of data.wishLists) {
-  if (wishList === authUserWishList) {
-    continue;
-  }
+for (const wishList of orderedWishLists) {
   %>
   <li>
     <a href="/wishLists/<%= wishList.id %>">
-      <%= wishList.owner_user_first_name %>
+      <%=
+      wishList === authUserWishList
+      ? 'Your Wish List'
+      : wishList.owner_user_first_name
+      %>
     </a>
   </li>
   <%

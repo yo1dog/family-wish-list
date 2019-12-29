@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('../partials/head') %>
-  <title>FWL - Suggestions</title>
+  <title>FWL / Suggestions</title>
 </head>
 
 <body>
@@ -11,9 +11,9 @@
 
     <h2>Suggestions</h2>
     
-    <form name="createSuggestionForm" method="post" action="/suggestions?referringUrl=<%= encodeURIComponent(data.referringUrl || '') %>">
+    <form name="createSuggestionForm" method="post" action="/suggestions/create?referringUrl=<%= encodeURIComponent(data.referringUrl || '') %>">
       <input type="text" name="name" value="<%= data.authorName %>" /><br />
-      <textarea name="text" required="required"><%= data.text %></textarea><br />
+      <textarea name="text" required><%= data.text %></textarea><br />
       <input type="submit" value="Submit" /><br />
       <span id="formErrorMessage"><%= data.formErrorMessage %></span>
     </form>

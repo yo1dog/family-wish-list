@@ -24,6 +24,7 @@ function createParseAuthMiddleware() {
     // get authorized user
     const authUser = await getAuthUser(authToken);
     if (!authUser) {
+      res.clearCookie(authUtil.cookieName);
       throw new APIError(401, 'Invalid auth token.');
     }
     

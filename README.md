@@ -7,8 +7,9 @@ Family Wish List
 
 - `npm install`
 - Create empty database.
-- Use `tools/initGroupRoles.sql` to create DB group roles.
-- Create DB user roles.
+- Use `tools/createGroupRoles.sql` to create DB group roles.
+- Use `tools/setGroupRoleDefaultPrivileges.sql` to set group role default privileges.
+- Create DB user roles. See bottom of `tools/createGroupRoles.sql`.
 - Create `.env` file at project root or use environment variables to configure. See `app/config.js`.
 - Initiate database structure and run migrations with `node migrate/runMigrations.js`.
 
