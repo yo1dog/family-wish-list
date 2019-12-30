@@ -9,7 +9,9 @@ cd "$(dirname "$0")"
     DROP SCHEMA IF EXISTS fwl_old CASCADE;
     CREATE SCHEMA fwl_old;
   ';
-  pg_dump --no-owner --no-acl "$OLD_PGURL" | sed -e 's/public\./fwl_old./g';
+  pg_dump --no-owner --no-acl "$OLD_PGURL" \
+  | sed -e 's/public\./fwl_old./g' \
+  | sed -e 's/SET search_path = public/SET search_path = fwl_old/g';
   cat <<EOF
     BEGIN;
     
