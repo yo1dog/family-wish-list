@@ -15,7 +15,7 @@ router.use(requireAPIKeyMiddleware);
 // handlers
 router.post('/setWishListItemCovered', requireAuthMiddleware, require('./handlers/setWishListItemCoveredHandler'));
 router.get ('/whoami',                 require('./handlers/whoAmIHandler'));
-router.get ('/',                       require('./handlers/rootHandler'));
+router.get ('/',                       require('./handlers/apiRootHandler'));
 
 
 module.exports = router;

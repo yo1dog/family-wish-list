@@ -1,11 +1,10 @@
 const SQL = require('@yo1dog/sql');
-const db = require('../../app/db');
-const transactionWrap = require('../../app/utils/sql/transactionWrap');
+const db  = require('../../app/db');
 
 
 /** @type {import('../runMigrations').MigrationRunFn} */
 module.exports = async function run(context) {
-  return await transactionWrap(db.getPool(), async dbClient => {
+  return await db.transactionWrap(async dbClient => {
     // NOTE: transactionWrap is required for multiple queries to be executed as part of a
     //       transaction. It is good practice to always include it in migrations.
     // NOTE: Multiple commands in a single query are executed in a transaction.
@@ -20,9 +19,9 @@ module.exports = async function run(context) {
       INSERT INTO fubar (col) SELECT generate_series(-5, 15);
       INSERT INTO fubar (col) VALUES (NULL), (NULL), (NULL);
     `);
-    const deleteResult     = await dbClient.query(SQL`DELETE FROM fubar WHERE col IS NULL RETURNING id`);
-    const lowUpdateResult  = await dbClient.query(SQL`UPDATE fubar SET col = ${minVal} WHERE col < ${minVal}`);
-    const highUpdateResult = await dbClient.query(SQL`UPDATE fubar SET col = ${maxVal} WHERE col > ${maxVal}`);
+    const deleteResult     = await db.query(SQL`DELETE FROM fubar WHERE col IS NULL RETURNING id`);
+    const lowUpdateResult  = await db.query(SQL`UPDATE fubar SET col = ${minVal} WHERE col < ${minVal}`);
+    const highUpdateResult = await db.query(SQL`UPDATE fubar SET col = ${maxVal} WHERE col > ${maxVal}`);
     
     // this optional return string is saved in the `result` column on the `migration_attempt`
     // row in the database. This can be usefull for recording notes/results of migrations and

@@ -1,4 +1,4 @@
-const wrapAsyncHandler = require('../utils/wrapAsyncHandler');
+const wrapAsyncHandler = require('../../utils/wrapAsyncHandler');
 
 
 module.exports.create = createRedirectMiddleware;

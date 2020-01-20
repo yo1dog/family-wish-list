@@ -1,12 +1,11 @@
-const SQL             = require('@yo1dog/sql');
-const db              = require('../../app/db');
-const transactionWrap = require('../../app/utils/sql/transactionWrap');
-const authUtil        = require('../../app/utils/authUtil');
+const SQL      = require('@yo1dog/sql');
+const db       = require('../../app/db');
+const authUtil = require('../../app/utils/authUtil');
 
 
 /** @type {import('../runMigrations').MigrationRunFn} */
 module.exports = async function run(context) {
-  return await transactionWrap(db.getPool(), async dbClient => {
+  return await db.transactionWrap(async dbClient => {
     const exampleUser = {
       firstName   : 'John',
       lastName    : 'Doe',

@@ -3,7 +3,7 @@ const pathUtil                 = require('path');
 const redirectAuthMiddleware   = require('./middleware/redirectAuthMiddleware');
 const redirectNoAuthMiddleware = require('./middleware/redirectNoAuthMiddleware');
 const requireAuthMiddleware    = require('../common/middleware/requireAuthMiddleware');
-const redirectMiddleware       = require('../common/redirectMiddleware');
+const redirectMiddleware       = require('../common/middleware/redirectMiddleware');
 
 
 const router = express.Router();
@@ -43,7 +43,7 @@ router.post('/items/:itemId/update',             requireAuthMiddleware,    requi
 router.get ('/items/:itemId/delete',             requireAuthMiddleware,    require('./handlers/wishListItem/deleteWishListItemHandler'));
 
 // root
-router.get('/', require('./handlers/rootHandler'));
+router.get('/', require('./handlers/webRootHandler'));
 
 // static
 router.use('/', express.static(pathUtil.join(__dirname, 'static')));
