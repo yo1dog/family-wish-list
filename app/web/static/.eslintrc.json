@@ -1,8 +1,11 @@
 {
-  "env": {
-    "browser": true,
-    "node": false,
-    "es6": true
+  "extends": ["../../../.eslintrc.json"],
+  "parserOptions": {
+    "project": "app/web/static/jsconfig.json"
   },
-  "extends": "../../../.eslintrc.json"
+  "env": {
+    "es6": true,
+    "node": false,
+    "browser": true
+  }
 }
